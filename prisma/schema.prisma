@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model EventUsers {
+  ID      Int    @id @default(autoincrement())
+  EventID Int
+  UserID  Int?
+  Users   Users? @relation(fields: [UserID], references: [ID], onDelete: NoAction, onUpdate: NoAction)
+  Events  Events @relation(fields: [EventID], references: [ID], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Events {
+  ID         Int          @id @default(autoincrement())
+  Name       String?
+  StartTime  DateTime?
+  EndTime    DateTime?
+  EventUsers EventUsers[]
+}
+
+model Users {
+  ID         Int          @id @default(autoincrement())
+  Name       String
+  Email      String?
+  EventUsers EventUsers[]
+}
+
+// prisma repo generator
+generator repo {
+  provider = "prisma-repo"
+  output   = "../src/repository"
+  query    = true
+  warn     = true
+  info     = true
+  error    = true
+}
